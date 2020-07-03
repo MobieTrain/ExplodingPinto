@@ -24,7 +24,7 @@ namespace Gameplay
 
         void Start()
         {
-            PlayerController.OnFoodClicked += ValidateClickedFood;
+            PlayerController.OnFoodClicked += RecalculateMovingPosition;
             ExplosionObject.SetActive(false);
         }
 
@@ -110,13 +110,10 @@ namespace Gameplay
             speed *= 1.3f;
         }
 
-        void ValidateClickedFood(Vector2 pos)
+        void RecalculateMovingPosition(Vector2 pos)
         {
             if (movingPos.Equals(pos))
-            {
-                print("SAME");
                 StopMoving();
-            }
         }
     }
 }
