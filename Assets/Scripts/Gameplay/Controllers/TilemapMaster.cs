@@ -37,7 +37,7 @@ namespace Gameplay
         /// Randomly spawns a food tile in the tilemap
         /// </summary>
         /// <param name="chanceToSpawn">Percentage of how probable it should spawn food per tile</param>
-        public void SpawnRandomFood(int chanceToSpawn)
+        public void SpawnRandomFood()
         {
             int itemsToSpawn = 5;
 

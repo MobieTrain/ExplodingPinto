@@ -54,6 +54,9 @@ namespace Gameplay
 
                 if (closestCollider != null)
                     StartMovingTo(closestCollider.transform.position);
+            } else
+            {
+                TilemapMaster.Instance.SpawnRandomFood();
             }
         }
 

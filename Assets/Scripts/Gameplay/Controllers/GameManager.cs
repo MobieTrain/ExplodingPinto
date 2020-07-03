@@ -13,7 +13,7 @@ namespace Gameplay
 
         void Start()
         {
-            TilemapMaster.Instance.SpawnRandomFood(chanceToSpawnFood);
+            TilemapMaster.Instance.SpawnRandomFood();
         }
 
         public void UpdateScore(int ammount)
