@@ -745,7 +745,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 4
   foodEaten: 0
-  explodValue: 2
+  explodValue: 6
   growScale: 0.2
   ExplosionObject: {fileID: 1508414333}
 --- !u!212 &1352730209
