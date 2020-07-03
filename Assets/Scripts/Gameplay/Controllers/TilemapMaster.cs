@@ -29,7 +29,8 @@ namespace Gameplay
         #endregion
 
         [Tooltip("Game tilemap")]
-        public Tilemap objectsTilemap;
+        public Tilemap foodTilemap;
+        public GameTile groundTile;
         [Space]
         [Header("Food tiles")]
         public GameTile[] foodTiles;
@@ -41,16 +42,16 @@ namespace Gameplay
         /// Randomly spawns a food tile in the tilemap
         /// </summary>
         /// <param name="chanceToSpawn">Percentage of how probable it should spawn food per tile</param>
-        public void RandomSpawnFood(int chanceToSpawn)
+        public void SpawnRandomFood(int chanceToSpawn)
         {
-            foreach (Vector3Int pos in objectsTilemap.cellBounds.allPositionsWithin)
+            foreach (Vector3Int pos in foodTilemap.cellBounds.allPositionsWithin)
             {
                 if (ShouldSpawn(chanceToSpawn) && !GetTileAt(pos))
                 {
                     GameTile rndFood = foodTiles[Random.Range(0, foodTiles.Length - 1)];
                     var layeredPos = CreateLayeredPosition(pos, 1);
 
-                    objectsTilemap.SetTile(layeredPos, rndFood);
+                    foodTilemap.SetTile(layeredPos, rndFood);
                     Tiles.Add(layeredPos, rndFood);
                 }
             }
@@ -73,6 +74,17 @@ namespace Gameplay
             GameTile tile;
             Tiles.TryGetValue(pos, out tile);
             return tile;
+        }
+        public bool DestroyTileAt(Vector3Int pos)
+        {
+            var tile = GetTileAt(pos);
+            if (!tile) return false;
+
+            Tiles.Remove(pos);
+            // in the future consider using a TileMapLayer controller 
+            foodTilemap.SetTile(pos, null);
+
+            return true;
         }
 
         public static Vector3Int CreateLayeredPosition(Vector3Int pos, int layer)

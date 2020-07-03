@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using UI;
 using UnityEngine;
 
 namespace Gameplay
@@ -8,15 +7,24 @@ namespace Gameplay
     {
         [Header("Game variables")]
         public int chanceToSpawnFood = 10;
+        public int scorePerFood = 2;
+        [Tooltip("Player game score")]
+        public int score;
 
         void Start()
         {
-            TilemapMaster.Instance.RandomSpawnFood(chanceToSpawnFood);
+            TilemapMaster.Instance.SpawnRandomFood(chanceToSpawnFood);
         }
 
         void Update()
         {
 
+        }
+
+        public void UpdateScore(int ammount)
+        {
+            score += ammount;
+            UIController.Instance.UpdateScoreText(score.ToString());
         }
     }
 }

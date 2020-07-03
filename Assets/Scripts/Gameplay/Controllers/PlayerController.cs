@@ -1,12 +1,17 @@
 ﻿using Gameplay;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     int objectsTilemapLayer = 1;
     TilemapMaster tileController;
+    GameManager game;
+
+    void Start()
+    {
+        game = FindObjectOfType<GameManager>();
+        if (!game) Debug.LogError("Could not find a Game Master instance");
+    }
 
     void Update()
     {
@@ -20,15 +25,20 @@ public class PlayerController : MonoBehaviour
         {
             Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             Vector3Int pos = TilemapMaster.CreateLayeredPosition(
-                tileController.objectsTilemap.WorldToCell(mouseWorldPos),
+                tileController.foodTilemap.WorldToCell(mouseWorldPos),
                 objectsTilemapLayer
             );
 
-            Debug.Log(pos);
-
-            print(tileController.GetTileAt(pos));
+            GameTile selectedTile = tileController.GetTileAt(pos);
+            if (selectedTile)
+            {
+                if (selectedTile.type == GameTiles.FOOD)
+                {
+                    tileController.DestroyTileAt(pos);
+                    game.UpdateScore(game.scorePerFood);
+                    FindObjectOfType<Chick>().StartMovingTo(new Vector2(mouseWorldPos.x, mouseWorldPos.y));
+                }
+            }
         }
-
-
     }
 }
