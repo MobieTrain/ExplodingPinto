@@ -1,42 +1,54 @@
 ﻿using Gameplay;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+
+namespace Gameplay
 {
-    int objectsTilemapLayer = 1;
-    TilemapMaster tileController;
-    GameManager game;
+    public delegate void FoodClicked(Vector2 pos);
 
-    void Start()
+    public class PlayerController : MonoBehaviour
     {
-        game = FindObjectOfType<GameManager>();
-        if (!game) Debug.LogError("Could not find a Game Master instance");
-    }
+        int objectsTilemapLayer = 1;
+        TilemapMaster tileController;
+        GameManager game;
 
-    void Update()
-    {
-        HandleFoodClick();
-        tileController = TilemapMaster.Instance;
-    }
+        public static event FoodClicked OnFoodClicked;
 
-    void HandleFoodClick()
-    {
-        if (Input.GetMouseButtonDown(0))
+
+        void Start()
         {
-            Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            Vector3Int pos = TilemapMaster.CreateLayeredPosition(
-                tileController.foodTilemap.WorldToCell(mouseWorldPos),
-                objectsTilemapLayer
-            );
+            game = FindObjectOfType<GameManager>();
+            if (!game) Debug.LogError("Could not find a Game Master instance");
+        }
 
-            GameTile selectedTile = tileController.GetTileAt(pos);
-            if (selectedTile)
+        void Update()
+        {
+            HandleFoodClick();
+            tileController = TilemapMaster.Instance;
+        }
+
+        void HandleFoodClick()
+        {
+            if (Input.GetMouseButtonDown(0))
             {
-                if (selectedTile.type == GameTiles.FOOD)
+                Vector3 mouseWorldPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                // Cast a ray straight down.
+                RaycastHit2D hit = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
+
+                if (hit.collider != null)
                 {
-                    tileController.DestroyTileAt(pos);
-                    game.UpdateScore(game.scorePerFood);
-                    FindObjectOfType<Chick>().StartMovingTo(new Vector2(mouseWorldPos.x, mouseWorldPos.y));
+                    Food food = hit.collider.GetComponent<Food>();
+                    if (food)
+                    {
+                        game.UpdateScore(game.scorePerFood);
+                        Destroy(hit.collider.gameObject);
+
+                        OnFoodClicked?.Invoke( new Vector2(
+                            hit.collider.transform.position.x,
+                            hit.collider.transform.position.y)
+                        );
+                    }
                 }
             }
         }

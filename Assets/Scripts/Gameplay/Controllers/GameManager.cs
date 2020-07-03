@@ -16,11 +16,6 @@ namespace Gameplay
             TilemapMaster.Instance.SpawnRandomFood(chanceToSpawnFood);
         }
 
-        void Update()
-        {
-
-        }
-
         public void UpdateScore(int ammount)
         {
             score += ammount;
